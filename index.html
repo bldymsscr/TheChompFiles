@@ -12,40 +12,52 @@
       --text:#eef2ff;
       --muted:#a9b1d6;
       --accent:#8b5cf6;
-      --accent-2:#22c55e;
       --border:#30385f;
-      --danger:#ef4444;
-      --shadow:0 18px 40px rgba(0,0,0,.28);
-      --radius:20px;
+      --shadow:0 14px 28px rgba(0,0,0,.24);
+      --radius:16px;
     }
 
-    *{box-sizing:border-box}
+    *{
+      box-sizing:border-box;
+    }
 
     body{
       margin:0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size:0.95rem;
       background:
         radial-gradient(circle at top left, rgba(139,92,246,.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(34,197,94,.13), transparent 24%),
+        radial-gradient(circle at top right, rgba(34,197,94,.10), transparent 24%),
         linear-gradient(180deg, #0b0f1d, #12172a 45%, #0d1222);
       color:var(--text);
       min-height:100vh;
     }
 
     .container{
-      width:min(1200px, calc(100% - 32px));
+      width:min(1450px, calc(100% - 24px));
       margin:0 auto;
-      padding:28px 0 48px;
+      padding:18px 0 28px;
     }
 
     .hero{
       text-align:center;
-      padding:18px 0 26px;
+      padding:8px 0 18px;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:3px 8px;
+      border-radius:999px;
+      background:rgba(139,92,246,.14);
+      border:1px solid rgba(139,92,246,.28);
+      color:#ddd6fe;
+      font-size:.75rem;
+      margin-bottom:10px;
     }
 
     .hero h1{
-      margin:0 0 10px;
-      font-size:clamp(2rem, 4vw, 3.4rem);
+      margin:0 0 8px;
+      font-size:clamp(1.6rem, 3vw, 2.4rem);
       line-height:1.1;
       letter-spacing:-0.03em;
     }
@@ -53,15 +65,15 @@
     .hero p{
       margin:0 auto;
       color:var(--muted);
-      max-width:760px;
-      font-size:1rem;
-      line-height:1.6;
+      max-width:820px;
+      font-size:0.9rem;
+      line-height:1.5;
     }
 
     .grid{
       display:grid;
       grid-template-columns:repeat(2, minmax(0, 1fr));
-      gap:24px;
+      gap:16px;
       align-items:start;
     }
 
@@ -69,40 +81,41 @@
       background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
       border:1px solid var(--border);
       border-radius:var(--radius);
-      padding:22px;
+      padding:16px;
       box-shadow:var(--shadow);
-      backdrop-filter: blur(10px);
+      backdrop-filter:blur(10px);
     }
 
     .card h2{
-      margin:0 0 8px;
-      font-size:1.4rem;
+      margin:0 0 6px;
+      font-size:1.15rem;
     }
 
     .card .sub{
       color:var(--muted);
-      margin:0 0 18px;
-      line-height:1.55;
-      font-size:.96rem;
+      margin:0 0 14px;
+      line-height:1.45;
+      font-size:0.88rem;
     }
 
     label{
       display:block;
-      margin:0 0 8px;
+      margin:0 0 6px;
       font-weight:600;
-      font-size:.95rem;
+      font-size:0.9rem;
     }
 
-    textarea, .output{
+    textarea,
+    .output{
       width:100%;
-      min-height:140px;
-      border-radius:16px;
+      min-height:100px;
+      border-radius:12px;
       border:1px solid var(--border);
       background:var(--panel);
       color:var(--text);
-      padding:14px 16px;
+      padding:10px 12px;
       font:inherit;
-      line-height:1.6;
+      line-height:1.5;
       resize:vertical;
       outline:none;
       transition:border-color .2s ease, transform .2s ease;
@@ -122,22 +135,28 @@
     .row{
       display:flex;
       flex-wrap:wrap;
-      gap:10px;
-      margin-top:14px;
+      gap:8px;
+      margin-top:10px;
     }
 
     button{
       border:none;
-      border-radius:12px;
-      padding:10px 14px;
+      border-radius:10px;
+      padding:8px 10px;
       font:inherit;
+      font-size:0.88rem;
       font-weight:600;
       cursor:pointer;
       transition:transform .15s ease, opacity .15s ease;
     }
 
-    button:hover{ transform:translateY(-1px); }
-    button:active{ transform:translateY(0); }
+    button:hover{
+      transform:translateY(-1px);
+    }
+
+    button:active{
+      transform:translateY(0);
+    }
 
     .primary{
       background:var(--accent);
@@ -158,34 +177,36 @@
 
     .keyboard{
       display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(110px, 1fr));
-      gap:10px;
-      margin-top:18px;
+      grid-template-columns:repeat(auto-fit, minmax(72px, 1fr));
+      gap:6px;
+      margin-top:12px;
     }
 
     .key{
       background:#20274a;
       border:1px solid var(--border);
       color:var(--text);
-      padding:12px 10px;
-      border-radius:14px;
+      padding:8px 6px;
+      border-radius:10px;
       text-align:center;
     }
 
     .key .glyph{
       display:block;
-      font-size:1.35rem;
-      margin-bottom:4px;
+      font-size:1rem;
+      margin-bottom:2px;
+      line-height:1.2;
     }
 
     .key .latin{
       display:block;
       color:var(--muted);
-      font-size:.86rem;
+      font-size:0.68rem;
+      line-height:1.1;
     }
 
     .legend{
-      margin-top:28px;
+      margin-top:20px;
       overflow:auto;
     }
 
@@ -194,23 +215,19 @@
       border-collapse:collapse;
       background:rgba(255,255,255,.02);
       border:1px solid var(--border);
-      border-radius:16px;
+      border-radius:12px;
       overflow:hidden;
     }
 
     th, td{
-      padding:12px 14px;
+      padding:10px 12px;
       text-align:left;
       border-bottom:1px solid rgba(255,255,255,.06);
+      font-size:0.9rem;
     }
 
     th{
       background:#1a203a;
-      font-size:.95rem;
-    }
-
-    td{
-      color:#e4e9ff;
     }
 
     tr:last-child td{
@@ -218,33 +235,26 @@
     }
 
     .note{
-      margin-top:16px;
+      margin-top:12px;
       color:var(--muted);
-      font-size:.92rem;
-      line-height:1.6;
-    }
-
-    .pill{
-      display:inline-block;
-      padding:3px 8px;
-      border-radius:999px;
-      background:rgba(139,92,246,.14);
-      border:1px solid rgba(139,92,246,.28);
-      color:#ddd6fe;
-      font-size:.8rem;
-      margin-bottom:12px;
+      font-size:0.84rem;
+      line-height:1.5;
     }
 
     footer{
-      margin-top:26px;
+      margin-top:18px;
       text-align:center;
       color:var(--muted);
-      font-size:.9rem;
+      font-size:0.82rem;
     }
 
     @media (max-width: 900px){
       .grid{
         grid-template-columns:1fr;
+      }
+
+      .container{
+        width:min(100%, calc(100% - 16px));
       }
     }
   </style>
@@ -252,18 +262,19 @@
 <body>
   <div class="container">
     <section class="hero">
-      <div class="pill">Static GitHub Pages Website</div>
-      <h1>Glyph Decoder</h1>
+      <h1>Zykeriad's Dungeon Glyph Decoder!</h1>
       <p>
-        Translate Latin text into your custom glyph alphabet, or decode glyphs back into Latin.
-        In the decoder, normal Latin letters stay as Latin, while supported glyphs are converted automatically.
+        A substitute translator for the Mizu language. Yes, I should touch grass.
       </p>
     </section>
 
     <section class="grid">
       <article class="card">
         <h2>Latin → Glyph</h2>
-        <p class="sub">Type any English word or sentence. Supported letters will instantly convert into glyphs. Unsupported characters stay unchanged.</p>
+        <p class="sub">
+          Type any English word or sentence. Supported letters will instantly convert into glyphs.
+          Unsupported characters stay unchanged.
+        </p>
 
         <label for="latinInput">Latin input</label>
         <textarea id="latinInput" placeholder="Type here..."></textarea>
@@ -273,13 +284,15 @@
           <button class="danger" id="clearLatinBtn" type="button">Clear</button>
         </div>
 
-        <label for="glyphOutput" style="margin-top:18px;">Glyph output</label>
+        <label for="glyphOutput" style="margin-top:14px;">Glyph output</label>
         <div class="output" id="glyphOutput"></div>
       </article>
 
       <article class="card">
         <h2>Glyph → Latin</h2>
-        <p class="sub">Type glyphs, Latin letters, or both. Glyphs decode to Latin letters, and existing Latin letters remain unchanged.</p>
+        <p class="sub">
+          Type glyphs, Latin letters, or both. Glyphs decode to Latin letters, and existing Latin letters remain unchanged.
+        </p>
 
         <label for="decodeInput">Glyph / Latin input</label>
         <textarea id="decodeInput" placeholder="Type glyphs here, or use the keyboard below..."></textarea>
@@ -291,7 +304,7 @@
           <button class="secondary" id="backspaceBtn" type="button">Backspace</button>
         </div>
 
-        <label for="decodedOutput" style="margin-top:18px;">Decoded message</label>
+        <label for="decodedOutput" style="margin-top:14px;">Decoded message</label>
         <div class="output" id="decodedOutput"></div>
 
         <div class="keyboard" id="glyphKeyboard"></div>
@@ -301,6 +314,7 @@
     <section class="card legend">
       <h2>Glyph Alphabet</h2>
       <p class="sub">Reference table for the supported letters currently included in the decoder.</p>
+
       <table>
         <thead>
           <tr>
@@ -310,13 +324,14 @@
         </thead>
         <tbody id="legendBody"></tbody>
       </table>
+
       <p class="note">
-        Missing Latin letters in the provided alphabet such as <strong>j, k, q, x, z</strong> are intentionally left unchanged.
+        Missing Latin letters in the provided alphabet such as <strong>j, k, q, x, z</strong> are left unchanged.
       </p>
     </section>
 
     <footer>
-      Built as a single-file static website, ready to upload to GitHub Pages.
+      Built as a single-file static website, ready for GitHub Pages.
     </footer>
   </div>
 
@@ -331,6 +346,7 @@
       g: "⋮",
       h: "リ",
       i: "ʖ",
+      k: "ꖎ",
       l: "ᔑ",
       m: "⊣",
       n: "⍊",
@@ -347,6 +363,7 @@
 
     const glyphEntries = Object.entries(latinToGlyph);
     const glyphToLatin = {};
+
     for (const [latin, glyph] of glyphEntries) {
       glyphToLatin[glyph] = latin;
     }
@@ -401,9 +418,7 @@
     }
 
     function copyText(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        // quiet success
-      }).catch(() => {
+      navigator.clipboard.writeText(text).catch(() => {
         alert("Copy failed. Please copy manually.");
       });
     }
