@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glyph Decoder</title>
+  <style>
+    :root{
+      --bg:#0f1220;
+      --panel:#171b2e;
+      --panel-2:#1f2540;
+      --text:#eef2ff;
+      --muted:#a9b1d6;
+      --accent:#8b5cf6;
+      --accent-2:#22c55e;
+      --border:#30385f;
+      --danger:#ef4444;
+      --shadow:0 18px 40px rgba(0,0,0,.28);
+      --radius:20px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(139,92,246,.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(34,197,94,.13), transparent 24%),
+        linear-gradient(180deg, #0b0f1d, #12172a 45%, #0d1222);
+      color:var(--text);
+      min-height:100vh;
+    }
+
+    .container{
+      width:min(1200px, calc(100% - 32px));
+      margin:0 auto;
+      padding:28px 0 48px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:18px 0 26px;
+    }
+
+    .hero h1{
+      margin:0 0 10px;
+      font-size:clamp(2rem, 4vw, 3.4rem);
+      line-height:1.1;
+      letter-spacing:-0.03em;
+    }
+
+    .hero p{
+      margin:0 auto;
+      color:var(--muted);
+      max-width:760px;
+      font-size:1rem;
+      line-height:1.6;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:24px;
+      align-items:start;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .card h2{
+      margin:0 0 8px;
+      font-size:1.4rem;
+    }
+
+    .card .sub{
+      color:var(--muted);
+      margin:0 0 18px;
+      line-height:1.55;
+      font-size:.96rem;
+    }
+
+    label{
+      display:block;
+      margin:0 0 8px;
+      font-weight:600;
+      font-size:.95rem;
+    }
+
+    textarea, .output{
+      width:100%;
+      min-height:140px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:var(--text);
+      padding:14px 16px;
+      font:inherit;
+      line-height:1.6;
+      resize:vertical;
+      outline:none;
+      transition:border-color .2s ease, transform .2s ease;
+    }
+
+    textarea:focus{
+      border-color:var(--accent);
+      transform:translateY(-1px);
+    }
+
+    .output{
+      white-space:pre-wrap;
+      word-break:break-word;
+      background:var(--panel-2);
+    }
+
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    button{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform .15s ease, opacity .15s ease;
+    }
+
+    button:hover{ transform:translateY(-1px); }
+    button:active{ transform:translateY(0); }
+
+    .primary{
+      background:var(--accent);
+      color:white;
+    }
+
+    .secondary{
+      background:#2a3157;
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+
+    .danger{
+      background:#3a1d25;
+      color:#ffd7de;
+      border:1px solid rgba(239,68,68,.35);
+    }
+
+    .keyboard{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(110px, 1fr));
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .key{
+      background:#20274a;
+      border:1px solid var(--border);
+      color:var(--text);
+      padding:12px 10px;
+      border-radius:14px;
+      text-align:center;
+    }
+
+    .key .glyph{
+      display:block;
+      font-size:1.35rem;
+      margin-bottom:4px;
+    }
+
+    .key .latin{
+      display:block;
+      color:var(--muted);
+      font-size:.86rem;
+    }
+
+    .legend{
+      margin-top:28px;
+      overflow:auto;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:rgba(255,255,255,.02);
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:hidden;
+    }
+
+    th, td{
+      padding:12px 14px;
+      text-align:left;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+
+    th{
+      background:#1a203a;
+      font-size:.95rem;
+    }
+
+    td{
+      color:#e4e9ff;
+    }
+
+    tr:last-child td{
+      border-bottom:none;
+    }
+
+    .note{
+      margin-top:16px;
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.6;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:3px 8px;
+      border-radius:999px;
+      background:rgba(139,92,246,.14);
+      border:1px solid rgba(139,92,246,.28);
+      color:#ddd6fe;
+      font-size:.8rem;
+      margin-bottom:12px;
+    }
+
+    footer{
+      margin-top:26px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    @media (max-width: 900px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="pill">Static GitHub Pages Website</div>
+      <h1>Glyph Decoder</h1>
+      <p>
+        Translate Latin text into your custom glyph alphabet, or decode glyphs back into Latin.
+        In the decoder, normal Latin letters stay as Latin, while supported glyphs are converted automatically.
+      </p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Latin → Glyph</h2>
+        <p class="sub">Type any English word or sentence. Supported letters will instantly convert into glyphs. Unsupported characters stay unchanged.</p>
+
+        <label for="latinInput">Latin input</label>
+        <textarea id="latinInput" placeholder="Type here..."></textarea>
+
+        <div class="row">
+          <button class="secondary" id="copyGlyphBtn" type="button">Copy glyph output</button>
+          <button class="danger" id="clearLatinBtn" type="button">Clear</button>
+        </div>
+
+        <label for="glyphOutput" style="margin-top:18px;">Glyph output</label>
+        <div class="output" id="glyphOutput"></div>
+      </article>
+
+      <article class="card">
+        <h2>Glyph → Latin</h2>
+        <p class="sub">Type glyphs, Latin letters, or both. Glyphs decode to Latin letters, and existing Latin letters remain unchanged.</p>
+
+        <label for="decodeInput">Glyph / Latin input</label>
+        <textarea id="decodeInput" placeholder="Type glyphs here, or use the keyboard below..."></textarea>
+
+        <div class="row">
+          <button class="secondary" id="copyDecodeBtn" type="button">Copy decoded text</button>
+          <button class="danger" id="clearDecodeBtn" type="button">Clear</button>
+          <button class="primary" id="spaceBtn" type="button">Insert space</button>
+          <button class="secondary" id="backspaceBtn" type="button">Backspace</button>
+        </div>
+
+        <label for="decodedOutput" style="margin-top:18px;">Decoded message</label>
+        <div class="output" id="decodedOutput"></div>
+
+        <div class="keyboard" id="glyphKeyboard"></div>
+      </article>
+    </section>
+
+    <section class="card legend">
+      <h2>Glyph Alphabet</h2>
+      <p class="sub">Reference table for the supported letters currently included in the decoder.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Letter</th>
+            <th>Glyph</th>
+          </tr>
+        </thead>
+        <tbody id="legendBody"></tbody>
+      </table>
+      <p class="note">
+        Missing Latin letters in the provided alphabet such as <strong>j, k, q, x, z</strong> are intentionally left unchanged.
+      </p>
+    </section>
+
+    <footer>
+      Built as a single-file static website, ready to upload to GitHub Pages.
+    </footer>
+  </div>
+
+  <script>
+    const latinToGlyph = {
+      a: "⨅",
+      b: "ꖌ",
+      c: "∴",
+      d: "𝙹",
+      e: "/",
+      f: "ᓵ",
+      g: "⋮",
+      h: "リ",
+      i: "ʖ",
+      l: "ᔑ",
+      m: "⊣",
+      n: "⍊",
+      o: "╎",
+      p: "ᒲ",
+      r: "∷",
+      s: "||",
+      t: "ᑑ",
+      u: "!¡",
+      v: "⍑",
+      w: "ᓭ",
+      y: "⚍"
+    };
+
+    const glyphEntries = Object.entries(latinToGlyph);
+    const glyphToLatin = {};
+    for (const [latin, glyph] of glyphEntries) {
+      glyphToLatin[glyph] = latin;
+    }
+
+    const glyphsSorted = Object.keys(glyphToLatin).sort((a, b) => b.length - a.length);
+
+    const latinInput = document.getElementById("latinInput");
+    const glyphOutput = document.getElementById("glyphOutput");
+    const decodeInput = document.getElementById("decodeInput");
+    const decodedOutput = document.getElementById("decodedOutput");
+    const glyphKeyboard = document.getElementById("glyphKeyboard");
+    const legendBody = document.getElementById("legendBody");
+
+    function encodeLatinToGlyph(text) {
+      return [...text].map(char => {
+        const lower = char.toLowerCase();
+        return latinToGlyph[lower] ?? char;
+      }).join("");
+    }
+
+    function decodeGlyphToLatin(text) {
+      let result = "";
+      let i = 0;
+
+      while (i < text.length) {
+        let matched = false;
+
+        for (const glyph of glyphsSorted) {
+          if (text.startsWith(glyph, i)) {
+            result += glyphToLatin[glyph];
+            i += glyph.length;
+            matched = true;
+            break;
+          }
+        }
+
+        if (!matched) {
+          result += text[i];
+          i += 1;
+        }
+      }
+
+      return result;
+    }
+
+    function updateLatinSide() {
+      glyphOutput.textContent = encodeLatinToGlyph(latinInput.value);
+    }
+
+    function updateDecodeSide() {
+      decodedOutput.textContent = decodeGlyphToLatin(decodeInput.value);
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // quiet success
+      }).catch(() => {
+        alert("Copy failed. Please copy manually.");
+      });
+    }
+
+    latinInput.addEventListener("input", updateLatinSide);
+    decodeInput.addEventListener("input", updateDecodeSide);
+
+    document.getElementById("copyGlyphBtn").addEventListener("click", () => {
+      copyText(glyphOutput.textContent);
+    });
+
+    document.getElementById("copyDecodeBtn").addEventListener("click", () => {
+      copyText(decodedOutput.textContent);
+    });
+
+    document.getElementById("clearLatinBtn").addEventListener("click", () => {
+      latinInput.value = "";
+      updateLatinSide();
+      latinInput.focus();
+    });
+
+    document.getElementById("clearDecodeBtn").addEventListener("click", () => {
+      decodeInput.value = "";
+      updateDecodeSide();
+      decodeInput.focus();
+    });
+
+    document.getElementById("spaceBtn").addEventListener("click", () => {
+      insertAtCursor(" ");
+    });
+
+    document.getElementById("backspaceBtn").addEventListener("click", () => {
+      const start = decodeInput.selectionStart;
+      const end = decodeInput.selectionEnd;
+
+      if (start !== end) {
+        decodeInput.setRangeText("", start, end, "end");
+      } else if (start > 0) {
+        decodeInput.setRangeText("", start - 1, start, "end");
+      }
+
+      decodeInput.dispatchEvent(new Event("input"));
+      decodeInput.focus();
+    });
+
+    function insertAtCursor(textToInsert) {
+      const start = decodeInput.selectionStart;
+      const end = decodeInput.selectionEnd;
+      decodeInput.setRangeText(textToInsert, start, end, "end");
+      decodeInput.dispatchEvent(new Event("input"));
+      decodeInput.focus();
+    }
+
+    function buildKeyboard() {
+      glyphEntries.forEach(([latin, glyph]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "key";
+        button.innerHTML = `<span class="glyph">${glyph}</span><span class="latin">${latin.toUpperCase()}</span>`;
+        button.addEventListener("click", () => insertAtCursor(glyph));
+        glyphKeyboard.appendChild(button);
+      });
+    }
+
+    function buildLegend() {
+      glyphEntries.forEach(([latin, glyph]) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${latin.toUpperCase()}</td><td>${glyph}</td>`;
+        legendBody.appendChild(row);
+      });
+    }
+
+    buildKeyboard();
+    buildLegend();
+    updateLatinSide();
+    updateDecodeSide();
+  </script>
+</body>
+</html>
